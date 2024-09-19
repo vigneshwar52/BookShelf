@@ -1,6 +1,7 @@
 package com.learning.bookshelf.ui.signup
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
@@ -12,6 +13,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
@@ -43,6 +45,7 @@ class SignupActivity : ComponentActivity() {
 @Composable
 fun SignUpScreen(navController: NavController, signUpViewModel: SignUpViewModel = viewModel()) {
     val uiState by signUpViewModel.uiState.collectAsState()
+    val context = LocalContext.current
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center ) {
         Column(
@@ -75,9 +78,11 @@ fun SignUpScreen(navController: NavController, signUpViewModel: SignUpViewModel 
                 Text(
                     text = uiState.selectedCountry ?: "Select Country",
                     modifier = Modifier.clickable { signUpViewModel.onCountryMenuClick() }.padding(10.dp))
+
                 DropdownMenu(
                     expanded = uiState.isCountryDropdownExpanded,
-                    onDismissRequest = { signUpViewModel.onCountryDropdownDismiss() }) {
+                    onDismissRequest = { signUpViewModel.onCountryDropdownDismiss() }
+                ) {
                     uiState.countryList.forEach { country ->
                         DropdownMenuItem(onClick = { signUpViewModel.onCountrySelected(country) }) {
                             Text(country)
@@ -88,8 +93,22 @@ fun SignUpScreen(navController: NavController, signUpViewModel: SignUpViewModel 
 
             Button(
                 onClick = {
-                    if (Validators.isValidEmail(uiState.email) && Validators.isValidPassword(uiState.password)) {
-                        signUpViewModel.onSignUp(navController)
+                    when {
+                        !Validators.isValidEmail(uiState.email) -> {
+                            Toast.makeText(context, "Invalid Email Address", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+
+                        !Validators.isValidPassword(uiState.password) -> {
+                            Toast.makeText(
+                                context,
+                                "Password must be at least 8 characters with one uppercase, one lowercase, one number, and one special character",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                        else -> {
+                            signUpViewModel.onSignUp(context,navController)
+                        }
                     }
                 },
                 modifier = Modifier.fillMaxWidth(0.8f),

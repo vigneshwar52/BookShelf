@@ -8,6 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.view.WindowCompat
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -20,7 +21,7 @@ import com.learning.bookshelf.ui.theme.BookShelfTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        WindowCompat.setDecorFitsSystemWindows(window, true)
         setContent {
             AppNavigation()
         }
@@ -31,7 +32,7 @@ class MainActivity : ComponentActivity() {
 fun AppNavigation() {
     val navController: NavHostController = rememberNavController()
 
-    NavHost(navController, startDestination = "sign_up_screen") {
+    NavHost(navController, startDestination = "book_list_screen") {
         composable("sign_up_screen") { SignUpScreen(navController) }
         composable("login_screen") { LoginScreen(navController) }
         composable("book_list_screen") { BookListScreen(navController) }

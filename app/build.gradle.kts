@@ -67,6 +67,7 @@ dependencies {
     implementation(libs.converter.gson)
     implementation(libs.androidx.lifecycle.runtime.ktx.v231)
     implementation(libs.androidx.activity.compose.v130)
+    implementation(libs.coil.compose)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

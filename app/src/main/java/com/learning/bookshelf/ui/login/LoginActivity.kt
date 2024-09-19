@@ -1,6 +1,7 @@
 package com.learning.bookshelf.ui.login
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -21,6 +22,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -48,6 +50,7 @@ class LoginActivity : ComponentActivity() {
 @Composable
 fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = viewModel()) {
     val uiState by loginViewModel.uiState.collectAsState()
+    val context = LocalContext.current
 
     Box(modifier = Modifier.fillMaxSize().padding(20.dp), contentAlignment = Alignment.Center ) {
         Column(
@@ -74,12 +77,19 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = v
             )
 
             Button(
-                onClick = { loginViewModel.onLogin(navController) },
+                onClick = {
+                    loginViewModel.onLogin(context,navController)
+                          },
                 modifier = Modifier.fillMaxWidth(0.8f).padding(top = 20.dp),
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color.DarkGray),
                 shape = RoundedCornerShape(16.dp)
             ) {
                 Text("Login", color = Color.White)
+            }
+            uiState.loginErrorMessage?.let {
+                LaunchedEffect(it) {
+                    Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
