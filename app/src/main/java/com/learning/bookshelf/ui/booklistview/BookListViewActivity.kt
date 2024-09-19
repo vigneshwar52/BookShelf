@@ -1,6 +1,5 @@
 package com.learning.bookshelf.ui.booklistview
 
-import android.icu.text.CaseMap.Title
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -20,7 +19,6 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Tab
@@ -177,15 +175,17 @@ fun BookListScreen(
                             modifier = Modifier.fillMaxSize(),
                             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
                         ) {
+                            val selectedYear = uiState.selectedYear
                             val booksForSelectedYear =
-                                groupedBooks[uiState.selectedYear] ?: emptyList()
+                                groupedBooks[selectedYear] ?: emptyList()
 
                             items(booksForSelectedYear.size) { index ->
                                 val book = booksForSelectedYear[index]
                                 BookItem(
                                     book = book,
                                     isFavorite = uiState.favorites.contains(book.id),
-                                    onFavoriteToggle = { bookListViewModel.toggleFavorite(book.id) }
+                                    onFavoriteToggle = { bookListViewModel.toggleFavorite(book.id) },
+                                    selectedYear
                                 )
 
                                 if (book.publishedChapterDate.toInt() != uiState.selectedYear) {
@@ -205,7 +205,12 @@ fun BookListScreen(
 }
 
 @Composable
-fun BookItem(book: Book, isFavorite: Boolean, onFavoriteToggle: () -> Unit) {
+fun BookItem(
+    book: Book,
+    isFavorite: Boolean,
+    onFavoriteToggle: () -> Unit,
+    selectedYear: Int?
+) {
     Card(
         modifier = Modifier
             .padding(10.dp)
@@ -226,7 +231,7 @@ fun BookItem(book: Book, isFavorite: Boolean, onFavoriteToggle: () -> Unit) {
                 contentDescription = "Book Cover",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .size(64.dp)
+                    .size(75.dp)
                     .padding(8.dp)
             )
             Column(
@@ -235,6 +240,7 @@ fun BookItem(book: Book, isFavorite: Boolean, onFavoriteToggle: () -> Unit) {
                     .padding(start = 8.dp)
             ) {
                 Text(text = book.title, fontWeight = FontWeight.Bold)
+                Text(text = "Published Year: $selectedYear", color = Color.Gray)
                 Text(text = "Score: ${book.score}", color = Color.Gray)
             }
             IconButton(onClick = onFavoriteToggle) {
