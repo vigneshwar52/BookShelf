@@ -117,9 +117,8 @@ fun BookListScreen(
     val uiState by bookListViewModel.uiState.collectAsState()
     val context = LocalContext.current
 
-    BackHandler(enabled = true){
+    BackHandler(enabled = true){}
 
-    }
     Scaffold(
         topBar = {
             TopToolBar(scrollBehavior,navController)

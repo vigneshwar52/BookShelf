@@ -3,6 +3,7 @@ package com.learning.bookshelf.ui.login
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.clickable
@@ -20,7 +21,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
-import androidx.compose.material3.Label
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.learning.bookshelf.util.PreferenceManager
 
 class LoginActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,6 +54,8 @@ class LoginActivity : ComponentActivity() {
 fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = viewModel()) {
     val uiState by loginViewModel.uiState.collectAsState()
     val context = LocalContext.current
+
+    BackHandler(enabled = true){}
 
     Box(modifier = Modifier
         .fillMaxSize()
@@ -86,12 +89,13 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = v
 
             Box(
                 modifier = Modifier.fillMaxWidth(0.8f).padding(10.dp),
-                contentAlignment = Alignment.TopStart // Aligns the text at the start
+                contentAlignment = Alignment.TopStart
             ) {
                 Text(
                     text = "Don't have an Account?\nClick here to sign up",
                     modifier = Modifier
                         .clickable {
+                            PreferenceManager.clearCredentials(context)
                             navController.navigate("sign_up_screen")
                         },
                     color = Color.Red

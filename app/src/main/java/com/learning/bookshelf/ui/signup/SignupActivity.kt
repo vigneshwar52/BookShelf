@@ -3,6 +3,7 @@ package com.learning.bookshelf.ui.signup
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -47,6 +48,8 @@ class SignupActivity : ComponentActivity() {
 fun SignUpScreen(navController: NavController, signUpViewModel: SignUpViewModel = viewModel()) {
     val uiState by signUpViewModel.uiState.collectAsState()
     val context = LocalContext.current
+
+    BackHandler(enabled = true){}
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center ) {
         Column(
