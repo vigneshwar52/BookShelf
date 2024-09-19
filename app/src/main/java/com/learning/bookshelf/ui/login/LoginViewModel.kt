@@ -14,7 +14,7 @@ data class LoginUiState(
     val email: String = "",
     val password: String = "",
     val isLoginSuccessful: Boolean = false,
-    val loginErrorMessage: String? = null
+    var loginErrorMessage: String? = null
 )
 
 class LoginViewModel : ViewModel() {
@@ -40,6 +40,7 @@ class LoginViewModel : ViewModel() {
             val hashedEnteredPassword = HashUtil.hashPwd(password)
 
             if (storedEmail == email && storedPasswordHash == hashedEnteredPassword) {
+                _uiState.value.loginErrorMessage = "Login Success"
                 _uiState.value = _uiState.value.copy(isLoginSuccessful = true)
                 navController.navigate("book_list_screen")
             } else {

@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -19,6 +20,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
+import androidx.compose.material3.Label
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
@@ -52,16 +54,20 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = v
     val uiState by loginViewModel.uiState.collectAsState()
     val context = LocalContext.current
 
-    Box(modifier = Modifier.fillMaxSize().padding(20.dp), contentAlignment = Alignment.Center ) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .padding(20.dp), contentAlignment = Alignment.Center ) {
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text(text = "Login", style = MaterialTheme.typography.h4, modifier = Modifier.padding(20.dp), color = Color.DarkGray)
+            Text(text = "Login", style = MaterialTheme.typography.h5, modifier = Modifier.padding(20.dp), color = Color.DarkGray)
 
             TextField(
                 value = uiState.email,
+                singleLine = true,
+                maxLines = 1,
                 onValueChange = { loginViewModel.onEmailChange(it) },
                 label = { Text("Email") },
                 modifier = Modifier.fillMaxWidth(0.8f)
@@ -69,6 +75,8 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = v
 
             TextField(
                 value = uiState.password,
+                singleLine = true,
+                maxLines = 1,
                 onValueChange = { loginViewModel.onPasswordChange(it) },
                 label = { Text("Password") },
                 modifier = Modifier.fillMaxWidth(0.8f),
@@ -76,20 +84,37 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = v
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
             )
 
+            Box(
+                modifier = Modifier.fillMaxWidth(0.8f).padding(10.dp),
+                contentAlignment = Alignment.TopStart // Aligns the text at the start
+            ) {
+                Text(
+                    text = "Don't have an Account?\nClick here to sign up",
+                    modifier = Modifier
+                        .clickable {
+                            navController.navigate("sign_up_screen")
+                        },
+                    color = Color.Red
+                )
+            }
+
             Button(
                 onClick = {
                     loginViewModel.onLogin(context,navController)
-                          },
-                modifier = Modifier.fillMaxWidth(0.8f).padding(top = 20.dp),
+                    uiState.loginErrorMessage?.let {
+                       Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                    }},
+                modifier = Modifier
+                    .fillMaxWidth(0.8f),
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color.DarkGray),
                 shape = RoundedCornerShape(16.dp)
             ) {
                 Text("Login", color = Color.White)
             }
-            uiState.loginErrorMessage?.let {
-                LaunchedEffect(it) {
-                    Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-                }
+        }
+        uiState.loginErrorMessage?.let {
+            LaunchedEffect(it) {
+                Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
             }
         }
     }

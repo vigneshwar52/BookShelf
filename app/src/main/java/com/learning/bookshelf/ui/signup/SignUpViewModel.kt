@@ -1,12 +1,11 @@
 package com.learning.bookshelf.ui.signup
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.learning.bookshelf.api.CountryRetrofitInstance
-import com.learning.bookshelf.api.Repository
 import com.learning.bookshelf.util.HashUtil
 import com.learning.bookshelf.util.PreferenceManager
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,15 +20,20 @@ data class SignUpUiState(
     val isCountryDropdownExpanded: Boolean = false
 )
 
-class SignUpViewModel(private val repository: Repository = Repository()) : ViewModel() {
+class SignUpViewModel:ViewModel() {
+    private val TAG = SignUpViewModel::class.java.simpleName
     private val _uiState = MutableStateFlow(SignUpUiState())
     val uiState: StateFlow<SignUpUiState> = _uiState
 
     init {
         viewModelScope.launch {
-            val countriesFromApi = repository.getCountriesFromApi()
-            val countryNames = countriesFromApi.map { it.country }
-            _uiState.value = _uiState.value.copy(countryList = countryNames)
+            try {
+                val countriesFromApi = CountryRetrofitInstance.api.getAllCountries()
+                val countryNames = countriesFromApi.map { it.country }
+                _uiState.value = _uiState.value.copy(countryList = countryNames)
+            }catch (e: Exception) {
+                Log.d(TAG, "Failed to fetch country list")
+            }
         }
     }
 

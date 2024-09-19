@@ -1,5 +1,6 @@
 package com.learning.bookshelf.ui.booklistview
 
+import android.icu.text.CaseMap.Title
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -7,9 +8,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.content.MediaType.Companion.Image
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -18,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
@@ -28,10 +27,17 @@ import androidx.compose.material.Tab
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -51,6 +57,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.learning.bookshelf.model.Book
 import com.learning.bookshelf.ui.booklistview.ui.theme.BookShelfTheme
 import com.learning.bookshelf.util.DateUtils
+import androidx.activity.compose.BackHandler
 
 class BookListViewActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,74 +76,126 @@ class BookListViewActivity : ComponentActivity() {
     }
 }
 
+@ExperimentalMaterial3Api
+@Composable
+fun TopToolBar(scrollBehavior: TopAppBarScrollBehavior,navController: NavController) {
+    TopAppBar(
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            titleContentColor = MaterialTheme.colorScheme.primary,
+        ),
+        title = {
+            Text("BookShelf")
+        },
+        actions = {
+            Box {
+                IconButton(onClick = {
+                    navController.navigate("login_screen")
+                }, modifier = Modifier.wrapContentWidth()) {
+                    Row {
+                        Icon(
+                            imageVector = Icons.Filled.Person,
+                            contentDescription = "Logout",
+                            modifier = Modifier.size(25.dp)
+                        )
+                        Text(text = "LogOut", modifier = Modifier.padding(5.dp))
+                    }
+                }
+            }
+        },
+        scrollBehavior = scrollBehavior,
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BookListScreen(
     navController: NavController,
     bookListViewModel: BookListViewModel = viewModel()
 ) {
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     val uiState by bookListViewModel.uiState.collectAsState()
     val context = LocalContext.current
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        when {
-            uiState.isLoading -> {
-                androidx.compose.material3.CircularProgressIndicator(
-                    modifier = Modifier.align(
-                        Alignment.Center
+    BackHandler(enabled = true){
+
+    }
+    Scaffold(
+        topBar = {
+            TopToolBar(scrollBehavior,navController)
+        },
+    ) { innerPadding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
+            when {
+                uiState.isLoading -> {
+                    androidx.compose.material3.CircularProgressIndicator(
+                        modifier = Modifier.align(
+                            Alignment.Center
+                        )
                     )
-                )
-            }
+                }
 
-            !uiState.errorMessage.isNullOrEmpty() -> {
-                Toast.makeText(context, "Error: ${uiState.errorMessage}", Toast.LENGTH_SHORT).show()
-            }
+                !uiState.errorMessage.isNullOrEmpty() -> {
+                    Toast.makeText(context, "Error: ${uiState.errorMessage}", Toast.LENGTH_SHORT)
+                        .show()
+                }
 
-            else -> {
-                val groupedBooks =
-                    uiState.books.groupBy { DateUtils.unixTimestampToYear(it.publishedChapterDate) }
-                val availableYears = groupedBooks.keys.sortedDescending()
+                else -> {
+                    val groupedBooks =
+                        uiState.books.groupBy { DateUtils.unixTimestampToYear(it.publishedChapterDate) }
+                    val availableYears = groupedBooks.keys.sortedDescending()
 
-                Column(modifier = Modifier.fillMaxSize()) {
-                    LazyRow(
-                        modifier = Modifier.padding(vertical = 8.dp),
-                        contentPadding = PaddingValues(horizontal = 16.dp)
-                    ) {
-                        items(availableYears.size) { index ->
-                            val year = availableYears[index]
-                            val isSelected = uiState.selectedYear == year
+                    Column(modifier = Modifier.fillMaxSize()) {
+                        LazyRow(
+                            modifier = Modifier.padding(vertical = 8.dp),
+                            contentPadding = PaddingValues(horizontal = 16.dp)
+                        ) {
+                            items(availableYears.size) { index ->
+                                val year = availableYears[index]
+                                val isSelected = uiState.selectedYear == year
 
-                            Tab(
-                                selected = isSelected,
-                                onClick = { bookListViewModel.setSelectedYear(year) },
-                                modifier = Modifier
-                                    .padding(horizontal = 8.dp)
-                                    .background(if (isSelected) Color.Gray else Color.Transparent, shape = CircleShape)
-                                    .padding(horizontal = 16.dp, vertical = 8.dp)
-                            ) {
-                                Text(text = year.toString(), fontWeight = FontWeight.Bold)
+                                Tab(
+                                    selected = isSelected,
+                                    onClick = { bookListViewModel.setSelectedYear(year) },
+                                    modifier = Modifier
+                                        .padding(horizontal = 8.dp)
+                                        .background(
+                                            if (isSelected) Color.Gray else Color.Transparent,
+                                            shape = CircleShape
+                                        )
+                                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                                ) {
+                                    Text(text = year.toString(), fontWeight = FontWeight.Bold)
+                                }
                             }
                         }
-                    }
 
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
-                    ) {
-                        val booksForSelectedYear = groupedBooks[uiState.selectedYear] ?: emptyList()
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+                        ) {
+                            val booksForSelectedYear =
+                                groupedBooks[uiState.selectedYear] ?: emptyList()
 
-                        items(booksForSelectedYear.size) { index ->
-                            val book = booksForSelectedYear[index]
-                            BookItem(
-                                book = book,
-                                isFavorite = uiState.favorites.contains(book.id),
-                                onFavoriteToggle = { bookListViewModel.toggleFavorite(book.id) }
-                            )
+                            items(booksForSelectedYear.size) { index ->
+                                val book = booksForSelectedYear[index]
+                                BookItem(
+                                    book = book,
+                                    isFavorite = uiState.favorites.contains(book.id),
+                                    onFavoriteToggle = { bookListViewModel.toggleFavorite(book.id) }
+                                )
 
-                            if (book.publishedChapterDate.toInt() != uiState.selectedYear) {
-                                bookListViewModel.setSelectedYear(DateUtils.unixTimestampToYear(book.publishedChapterDate))
+                                if (book.publishedChapterDate.toInt() != uiState.selectedYear) {
+                                    bookListViewModel.setSelectedYear(
+                                        DateUtils.unixTimestampToYear(
+                                            book.publishedChapterDate
+                                        )
+                                    )
+                                }
                             }
                         }
                     }

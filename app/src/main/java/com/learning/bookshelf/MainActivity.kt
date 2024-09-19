@@ -17,6 +17,7 @@ import com.learning.bookshelf.ui.booklistview.BookListScreen
 import com.learning.bookshelf.ui.login.LoginScreen
 import com.learning.bookshelf.ui.signup.SignUpScreen
 import com.learning.bookshelf.ui.theme.BookShelfTheme
+import androidx.activity.compose.BackHandler
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,7 +33,7 @@ class MainActivity : ComponentActivity() {
 fun AppNavigation() {
     val navController: NavHostController = rememberNavController()
 
-    NavHost(navController, startDestination = "book_list_screen") {
+    NavHost(navController, startDestination = "login_screen") {
         composable("sign_up_screen") { SignUpScreen(navController) }
         composable("login_screen") { LoginScreen(navController) }
         composable("book_list_screen") { BookListScreen(navController) }

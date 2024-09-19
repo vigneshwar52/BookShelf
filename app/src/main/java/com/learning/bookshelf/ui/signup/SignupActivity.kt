@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
@@ -53,9 +54,11 @@ fun SignUpScreen(navController: NavController, signUpViewModel: SignUpViewModel 
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text(text = "SIGN UP", style = MaterialTheme.typography.h4, color = Color.DarkGray, modifier = Modifier.padding(10.dp))
+            Text(text = "SIGN UP", style = MaterialTheme.typography.h5, color = Color.DarkGray, modifier = Modifier.padding(10.dp))
             TextField(
                 value = uiState.email,
+                singleLine = true,
+                maxLines = 1,
                 onValueChange = { signUpViewModel.onEmailChange(it) },
                 label = { Text("Email") },
                 modifier = Modifier.fillMaxWidth(0.8f)
@@ -63,6 +66,8 @@ fun SignUpScreen(navController: NavController, signUpViewModel: SignUpViewModel 
 
             TextField(
                 value = uiState.password,
+                singleLine = true,
+                maxLines = 1,
                 onValueChange = { signUpViewModel.onPasswordChange(it) },
                 label = { Text("Password") },
                 modifier = Modifier.fillMaxWidth(0.8f),
@@ -76,16 +81,19 @@ fun SignUpScreen(navController: NavController, signUpViewModel: SignUpViewModel 
                     .padding(vertical = 8.dp)
             ) {
                 Text(
-                    text = uiState.selectedCountry ?: "Select Country",
-                    modifier = Modifier.clickable { signUpViewModel.onCountryMenuClick() }.padding(10.dp))
+                    text = uiState.selectedCountry ?: "Click here to Select Country",
+                    modifier = Modifier.clickable { signUpViewModel.onCountryMenuClick() }.padding(10.dp),
+                    color = Color.Red)
 
                 DropdownMenu(
                     expanded = uiState.isCountryDropdownExpanded,
                     onDismissRequest = { signUpViewModel.onCountryDropdownDismiss() }
                 ) {
                     uiState.countryList.forEach { country ->
-                        DropdownMenuItem(onClick = { signUpViewModel.onCountrySelected(country) }) {
-                            Text(country)
+                        DropdownMenuItem(onClick = { signUpViewModel.onCountrySelected(country) },
+                            modifier = Modifier
+                                .padding(2.dp)) {
+                            Text(text = country, color = Color.Blue)
                         }
                     }
                 }
@@ -94,9 +102,15 @@ fun SignUpScreen(navController: NavController, signUpViewModel: SignUpViewModel 
             Button(
                 onClick = {
                     when {
+                        !Validators.isValidEmail(uiState.email) &&  !Validators.isValidPassword(uiState.password) -> {
+                            Toast.makeText(
+                                context,
+                                "Invalid Email and Password",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
                         !Validators.isValidEmail(uiState.email) -> {
-                            Toast.makeText(context, "Invalid Email Address", Toast.LENGTH_SHORT)
-                                .show()
+                            Toast.makeText(context, "Invalid Email Address", Toast.LENGTH_SHORT).show()
                         }
 
                         !Validators.isValidPassword(uiState.password) -> {
