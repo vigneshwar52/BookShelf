@@ -31,7 +31,6 @@ class BookListViewModel : ViewModel() {
             try {
                 val books = BookRetrofitInstance.api.getBooks()
 
-                val booksByYear = books.groupBy { DateUtils.unixTimestampToYear(it.publishedChapterDate) }
                 val sortedBooks = books.sortedByDescending { DateUtils.unixTimestampToYear(it.publishedChapterDate) }
 
                 _uiState.value = _uiState.value.copy(books = sortedBooks, isLoading = false)

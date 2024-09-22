@@ -68,7 +68,7 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = v
             Text(text = "Login", style = MaterialTheme.typography.h5, modifier = Modifier.padding(20.dp), color = Color.DarkGray)
 
             TextField(
-                value = uiState.email,
+                value = uiState.email.trim(),
                 singleLine = true,
                 maxLines = 1,
                 onValueChange = { loginViewModel.onEmailChange(it) },
@@ -77,7 +77,7 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = v
             )
 
             TextField(
-                value = uiState.password,
+                value = uiState.password.trim(),
                 singleLine = true,
                 maxLines = 1,
                 onValueChange = { loginViewModel.onPasswordChange(it) },

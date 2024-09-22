@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Bücherregal</string>
+    <string name="book_shelf">Bücherregal</string>
+    <string name="title_activity_signup">Anmeldeaktivität</string>
+    <string name="title_activity_login">Anmeldeaktivität</string>
+    <string name="title_activity_book_list_view">BookListViewActivity</string>
+    <string name="sign_up">Melden Sie sich an</string>
+    <string name="book_list_view">Buchlistenansicht</string>
+</resources>

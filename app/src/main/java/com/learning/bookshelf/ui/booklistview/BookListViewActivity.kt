@@ -56,6 +56,8 @@ import com.learning.bookshelf.model.Book
 import com.learning.bookshelf.ui.booklistview.ui.theme.BookShelfTheme
 import com.learning.bookshelf.util.DateUtils
 import androidx.activity.compose.BackHandler
+import androidx.compose.ui.res.stringResource
+import com.learning.bookshelf.R
 
 class BookListViewActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -83,7 +85,7 @@ fun TopToolBar(scrollBehavior: TopAppBarScrollBehavior,navController: NavControl
             titleContentColor = MaterialTheme.colorScheme.primary,
         ),
         title = {
-            Text("BookShelf")
+            Text(stringResource(id = R.string.book_shelf))
         },
         actions = {
             Box {

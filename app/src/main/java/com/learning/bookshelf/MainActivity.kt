@@ -17,7 +17,6 @@ import com.learning.bookshelf.ui.booklistview.BookListScreen
 import com.learning.bookshelf.ui.login.LoginScreen
 import com.learning.bookshelf.ui.signup.SignUpScreen
 import com.learning.bookshelf.ui.theme.BookShelfTheme
-import androidx.activity.compose.BackHandler
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">BookShelf</string>
+    <string name="book_shelf">BookShelf</string>
     <string name="title_activity_signup">SignupActivity</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="title_activity_book_list_view">BookListViewActivity</string>
+    <string name="sign_up">Melden Sie sich an</string>
+    <string name="book_list_view">Buchlistenansicht</string>
 </resources>

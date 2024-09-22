@@ -2,6 +2,8 @@ package com.learning.bookshelf.ui.signup
 
 import android.content.Context
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
@@ -22,9 +24,8 @@ data class SignUpUiState(
 
 class SignUpViewModel:ViewModel() {
     private val TAG = SignUpViewModel::class.java.simpleName
-    private val _uiState = MutableStateFlow(SignUpUiState())
+    private val _uiState = MutableStateFlow<SignUpUiState>(SignUpUiState())
     val uiState: StateFlow<SignUpUiState> = _uiState
-
     init {
         viewModelScope.launch {
             try {

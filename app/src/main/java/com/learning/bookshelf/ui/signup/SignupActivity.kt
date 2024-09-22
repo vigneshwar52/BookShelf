@@ -23,7 +23,9 @@ import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.learning.bookshelf.AppNavigation
+import com.learning.bookshelf.model.Book
 import com.learning.bookshelf.signup.ui.theme.BookShelfTheme
 import com.learning.bookshelf.util.Validators
 
@@ -59,7 +61,7 @@ fun SignUpScreen(navController: NavController, signUpViewModel: SignUpViewModel 
         ) {
             Text(text = "SIGN UP", style = MaterialTheme.typography.h5, color = Color.DarkGray, modifier = Modifier.padding(10.dp))
             TextField(
-                value = uiState.email,
+                value = uiState.email.trim(),
                 singleLine = true,
                 maxLines = 1,
                 onValueChange = { signUpViewModel.onEmailChange(it) },
@@ -68,7 +70,7 @@ fun SignUpScreen(navController: NavController, signUpViewModel: SignUpViewModel 
             )
 
             TextField(
-                value = uiState.password,
+                value = uiState.password.trim(),
                 singleLine = true,
                 maxLines = 1,
                 onValueChange = { signUpViewModel.onPasswordChange(it) },
@@ -150,6 +152,7 @@ fun Greeting2(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun GreetingPreview2() {
     BookShelfTheme {
-        AppNavigation()
+        var navController:NavController = rememberNavController()
+        SignUpScreen(navController)
     }
 }

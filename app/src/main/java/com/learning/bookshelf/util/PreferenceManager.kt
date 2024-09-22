@@ -2,7 +2,6 @@ package com.learning.bookshelf.util
 
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.compose.foundation.layout.BoxScope
 
 object PreferenceManager {
     private const val PREFS_NAME = "USER_PREFS"
