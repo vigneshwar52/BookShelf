@@ -52,7 +52,7 @@ This is a Book Library application built using **Jetpack Compose** in **Android 
 
 ## Requirements
 
-- Android Studio Arctic Fox or later.
+- Android Studio.
 - Kotlin with Jetpack Compose.
 - Network libraries such as Retrofit for API calls.
 - Internet connection for API integration.
