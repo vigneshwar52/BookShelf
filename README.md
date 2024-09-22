@@ -9,7 +9,6 @@ This is a Book Library application built using **Jetpack Compose** in **Android 
 - **Sign-Up:**
   - Users can sign up by entering their email, password, and selecting their country from a dropdown list.
   - Country list is populated using the **Country List API**.
-  - The default country is automatically selected based on the user's IP location using the **IP Location API**.
   - Passwords must meet these criteria: minimum of 8 characters, including one number, one special character (!@#$%^&*()), one lowercase letter, and one uppercase letter.
 
 - **Login Screen:**
